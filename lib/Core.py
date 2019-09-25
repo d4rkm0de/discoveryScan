@@ -8,7 +8,7 @@ color = {
     "white": '\033[0m',
     "cyan": '\033[96m',
     "light gray": '\033[97m',
-    "gray": '\033[90m'
+    "dark gray": '\033[90m'
 
 }
 
