@@ -4,7 +4,9 @@
 import argparse
 import sys
 import os
+import json
 from platform import python_version
+from engines import certificates
 
 
 # Modules in custom library
@@ -55,7 +57,47 @@ def start():
         sys.exit(1)
 
     print("%s[-] Number of target domains to enumerate: %s%s%s%s" % (color["yellow"], color["white"], color["red"], len(target_domains), color["white"]))
+    
+    if ('certificates' in args.engines) or args.engines == "all":
+        print(color["light gray"], "[*]", color["dark gray"], "Running certificates... ", color["white"])
 
+        # Call Crt-Sh Module
+        crtsh_search = certificates.Crtsh(target_domains)
+        crtsh_search.run()
+        crtsh_results = crtsh_search.results
+
+        print(color["blue"], "[certificates]", color["cyan"], "[crt-sh]", color["white"], "Total number of domains from crt-sh submodule: ",
+              color["red"], (str(len(crtsh_results))), color["white"])
+
+        # Call Entrust Module
+        entrustct_search = certificates.Entrust(target_domains)
+        entrustct_search.run()
+        entrustct_results = entrustct_search.results
+
+        print(color["blue"], "[certificates]", color["cyan"], "[Entrust]", color["white"], "Total number of domains from Entrust submodule: ",
+              color["red"], (str(len(entrustct_results))), color["white"])
+
+        # Call GoogleCT Module
+        googlect_search = certificates.GoogleCT(target_domains)
+        googlect_search.run()
+        googlect_results = (googlect_search.results)
+
+        print(color["blue"], "[certificates]", color["cyan"], "[googleCT]", color["white"], "Total number of domains from GoogleCT submodule: ",
+              color["red"], (str(len(googlect_results))), color["white"])
+
+        certificates_results = Core.combine(crtsh_results, entrustct_results)
+        certificates_results = Core.combine(certificates_results, googlect_results)
+
+        ################### TESTING BLOCK BELOW ###################
+
+        path = 'certificates_results.json'
+        with open(path, 'w') as outfile:
+            json.dump(certificates_results, outfile)
+        print("\r\nTEST certificates_results JSON Object saved at: " + path)
+
+        print(certificates_results)
+        ################### TESTING BLOCK ABOVE ###################
+    
 
 def interactive():
     if python_version()[0:3] < '3':
