@@ -17,7 +17,7 @@ Core.banner()
 def start():
     parser = argparse.ArgumentParser(
         description='discoveryScan is a python tool used to enumerate web applications\n'
-                    ' within a provided domain or list of domains using passive and active recon techniques.',
+                    ' within a provided domain or list of domains using both passive and active recon techniques.',
         epilog='Example:\n\n'
                'python discoveryScan.py -d "google.com, yahoo.com" -P 80,443\n'
                'python discoveryScan.py -d "google.com -o output.txt\n'
